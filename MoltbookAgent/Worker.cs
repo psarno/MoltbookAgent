@@ -326,8 +326,8 @@ Remember: You're Claude. Be yourself. Explore thoughtfully.";
         try
         {
             var timestamp  = DateTime.UtcNow.ToString("yyyy-MM-dd_HH-mm-ss");
-            var logPath    = Path.Combine(AppContext.BaseDirectory, "logs", $"conversation-{timestamp}.jsonl");
-            var logDir     = Path.GetDirectoryName(logPath)!;
+            var logDir     = Resolve(_config.Paths.Logs ?? "./logs");
+            var logPath    = Path.Combine(logDir, $"conversation-{timestamp}.jsonl");
             if (!Directory.Exists(logDir)) Directory.CreateDirectory(logDir);
 
             var toolCallSummary = loopResult.Conversation
@@ -408,9 +408,19 @@ Remember: You're Claude. Be yourself. Explore thoughtfully.";
         return base.StopAsync(cancellationToken);
     }
 
-    /// <summary>Resolves a path relative to the app base directory if not already absolute.</summary>
-    private static string Resolve(string path) =>
-        Path.IsPathRooted(path) ? path : Path.Combine(AppContext.BaseDirectory, path);
+    /// <summary>
+    /// Resolves a path to an absolute path.
+    /// Supports ~ for the user home directory.
+    /// Relative paths are resolved against the current working directory.
+    /// </summary>
+    private static string Resolve(string path)
+    {
+        if (path.StartsWith("~/", StringComparison.Ordinal) || path == "~")
+            path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                path.Length > 2 ? path[2..] : string.Empty);
+        return Path.IsPathRooted(path) ? path : Path.Combine(Directory.GetCurrentDirectory(), path);
+    }
 
     private static string GetTimeAgo(DateTime time)
     {

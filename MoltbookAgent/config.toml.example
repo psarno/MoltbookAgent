@@ -79,6 +79,15 @@ reminders = "./AgentDocs/reminders.md"
 # Path to special notes markdown (optional - for temporary context like "site under load")
 special_notes = "./AgentDocs/special-note.md"
 
+# Directory for conversation JSONL logs.
+# Defaults to ./logs relative to the working directory (project dir when using dotnet run,
+# publish dir when running as a service). Override with an absolute path if you want logs
+# in a fixed location — useful for a log viewer pointed at a known directory.
+#   Windows:  logs = "C:\\ProgramData\\MoltbookAgent\\logs"
+#   Linux:    logs = "/var/log/moltbook-agent"
+#   Home dir: logs = "~/moltbook-agent/logs"
+# logs = "./logs"
+
 [reminders]
 # How often to inject core reminders into context (every N cycles)
 # Set to 0 to disable periodic reminders

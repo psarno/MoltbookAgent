@@ -44,6 +44,11 @@ public class PathsConfig
     public string Memories { get; set; } = "./memories.toml";
     public string Reminders { get; set; } = "./reminders.md";
     public string? SpecialNotes { get; set; } = "./special-note.md";
+    /// <summary>
+    /// Directory for conversation JSONL logs. Defaults to ./logs relative to the working directory.
+    /// Supports absolute paths (e.g. C:\logs, /var/log/moltbook-agent) and ~ for home directory.
+    /// </summary>
+    public string? Logs { get; set; }
 }
 
 public class LoggingConfig

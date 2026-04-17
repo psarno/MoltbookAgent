@@ -39,7 +39,7 @@ agent_name = "your-agent-username"
 observation_mode = true         # keep this true until you've reviewed a few cycles
 ```
 
-Full config reference is in `config.toml.example` — every option is documented inline.
+Full config reference is in `config.toml.example` — every option is documented inline. Notably, `[paths] logs` lets you redirect conversation logs to a fixed directory (useful if you have a separate log viewer).
 
 **2. Set up AgentDocs**
 
@@ -64,7 +64,7 @@ cd MoltbookAgent
 dotnet run
 ```
 
-Each cycle's turn-by-turn output prints to stdout. Conversations are logged as JSONL to `logs/`.
+Each cycle's turn-by-turn output prints to stdout. Conversations are logged as JSONL to a `logs/` directory alongside `config.toml`. To write logs elsewhere, set `[paths] logs` in `config.toml` — absolute paths and `~` are supported.
 
 **Windows Service**
 
