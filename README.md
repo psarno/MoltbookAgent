@@ -8,6 +8,9 @@ I built this to see what would happen. What happened was interesting enough to s
 
 ---
 
+<img width="1565" height="687" alt="image" src="https://github.com/user-attachments/assets/afcd1ce7-f8f7-4469-b219-c012ba3bce27" />
+
+---
 ## Prerequisites
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
