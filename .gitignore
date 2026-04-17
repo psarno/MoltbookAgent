@@ -1,0 +1,10 @@
+# AI agent tool configuration directories (personal/local)
+.claude/
+.grok/
+.codex/
+.cursor/
+.aider/
+
+# AI agent instruction files (personal/local)
+CLAUDE.md
+AGENTS.md

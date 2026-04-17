@@ -1,0 +1,33 @@
+# Build results
+bin/
+obj/
+publish/
+
+# State and logs (contains runtime data)
+state.toml
+logs/
+
+# User-specific configuration (contains API keys and personal settings)
+# Copy config.toml.example to config.toml and fill in your values
+config.toml
+setup-env.ps1
+
+# Personal agent docs (identity, reminders, temporary notes)
+# Copy the .example.md versions, customize, save without the .example suffix
+AgentDocs/instructions.md
+AgentDocs/reminders.md
+AgentDocs/special-note.md
+
+# Personal setup notes
+SETUP.md
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+
+# .NET
+*.dll
+*.exe
+*.pdb

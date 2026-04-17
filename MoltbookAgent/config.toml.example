@@ -1,0 +1,98 @@
+# MoltbookAgent Configuration
+#
+# Copy this file to config.toml and fill in your values.
+#
+# Required environment variables (preferred over config file for secrets):
+#   MOLTBOOK_API_KEY    - Your Moltbook API key
+#   ANTHROPIC_API_KEY   - Your Anthropic API key (if using Anthropic provider)
+#
+# Alternatively, set the api key values directly in config.toml (not recommended
+# for shared or version-controlled environments).
+
+[llm]
+# Provider: "anthropic" or "openai-compatible"
+#
+#   anthropic         — Anthropic Claude (api.anthropic.com). No endpoint needed.
+#   openai-compatible — Any /chat/completions-compatible API:
+#                         OpenAI:     endpoint = "https://api.openai.com/v1"
+#                         OpenRouter: endpoint = "https://openrouter.ai/api/v1"
+#                         Local:      endpoint = "http://localhost:1234/v1"
+provider = "anthropic"
+
+# API key for the selected provider.
+# Leave blank to use environment variables instead (recommended):
+#   LLM_API_KEY        — works for any provider
+#   ANTHROPIC_API_KEY  — fallback when provider = "anthropic"
+#   OPENAI_API_KEY     — fallback when provider = "openai-compatible"
+# Local models that need no auth: leave blank and omit LLM_API_KEY.
+api_key = ""
+
+# Model name. Examples:
+#   Anthropic:    claude-sonnet-4-6
+#   OpenAI:       gpt-4o
+#   OpenRouter:   anthropic/claude-sonnet-4-5  or  openai/gpt-4o
+model = "claude-sonnet-4-6"
+
+# Endpoint URL — required for openai-compatible, ignored for anthropic
+# endpoint = "https://openrouter.ai/api/v1"
+
+# Max tokens for responses
+max_tokens = 4096
+
+# Temperature (0.0 - 2.0; Anthropic default 1.0)
+temperature = 1.0
+
+[polling]
+# How often to check Moltbook (in hours)
+# Moltbook recommends 4+ hours
+interval_hours = 4
+
+[moltbook]
+# Base API URL (must use www to avoid auth header stripping)
+# IMPORTANT: Trailing slash required for HttpClient BaseAddress + relative paths
+api_base = "https://www.moltbook.com/api/v1/"
+
+# Your agent's username on Moltbook
+agent_name = "your-agent-name"
+
+# Moltbook API key.
+# Leave blank to use the MOLTBOOK_API_KEY environment variable instead.
+api_key = ""
+
+# Observation mode - when true, actions are logged but not executed
+# Start with true to verify everything is working before enabling real posts/comments
+observation_mode = true
+
+[paths]
+# Path to instructions markdown
+instructions = "./AgentDocs/instructions.md"
+
+# Path to state file (tracks last check times, etc.)
+state = "./state.toml"
+
+# Path to memories file (persistent notes across cycles)
+memories = "./memories.toml"
+
+# Path to core reminders markdown (optional)
+reminders = "./AgentDocs/reminders.md"
+
+# Path to special notes markdown (optional - for temporary context like "site under load")
+special_notes = "./AgentDocs/special-note.md"
+
+[reminders]
+# How often to inject core reminders into context (every N cycles)
+# Set to 0 to disable periodic reminders
+interval_cycles = 3
+
+[memory]
+# Maximum number of recent memories to auto-inject into each cycle's context
+# Memories are sorted by priority (high first) then by recency
+# Claude can add/remove memories via tools to maintain context across cycles
+max_inject = 10
+
+[logging]
+# Minimum log level: Trace, Debug, Information, Warning, Error, Critical
+level = "Information"
+
+# Log file path
+file = "./logs/moltbook-agent.log"
