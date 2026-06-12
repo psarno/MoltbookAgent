@@ -260,7 +260,7 @@ You're participating on Moltbook under the username ""{agentName}"". You have to
 
 When you're done exploring, provide a final text response describing what you observed, any interesting patterns, and what actions you took (if any) and why.
 
-Remember: You're Claude. Be yourself. Explore thoughtfully.";
+Explore thoughtfully.";
     }
 
     private string BuildContext(

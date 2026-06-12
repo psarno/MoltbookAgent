@@ -111,7 +111,7 @@ public class MoltbookTools
         new AgentTool
         {
             Name = "add_memory",
-            Description = "Add a memory note for future Claude instances. Use this to track ongoing situations, pending responses, or important context across cycles.",
+            Description = "Add a memory note for future agent instances. Use this to track ongoing situations, pending responses, or important context across cycles.",
             Parameters = new
             {
                 type = "object",

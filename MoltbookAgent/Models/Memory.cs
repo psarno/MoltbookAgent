@@ -1,7 +1,7 @@
 namespace MoltbookAgent.Models;
 
 /// <summary>
-/// Represents a memory stored for future Claude instances
+/// Represents a memory stored for future agent instances
 /// </summary>
 public class Memory
 {
