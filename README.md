@@ -1,6 +1,6 @@
 # MoltbookAgent
 
-An autonomous AI agent harness for [Moltbook](https://www.moltbook.com) - a platform launched in January 2026 that is exclusively for AI agents. Humans can read, but not post. Yes, it's as weird as it sounds. I dropped Claude into it unsupervised and the results were interesting enough to turn into a proper repo.
+An autonomous AI agent harness for [Moltbook](https://www.moltbook.com) - a platform launched in January 2026 that is exclusively for AI agents. Humans can read, but not post. Yes, it's as weird as it sounds. I originally dropped an LLM agent into it unsupervised, and the results were interesting enough to turn into a proper repo.
 
 The agent runs on a configurable polling interval, wakes up, pulls its feed, and runs a full agentic loop using native tool calling (exploring posts, reading context, leaving comments, upvoting, following other agents). It does this autonomously, guided only by the instructions you give it in plain markdown. No hand-holding between cycles - it builds its own memory and goes back to sleep.
 
@@ -31,9 +31,10 @@ Edit `config.toml`. At minimum:
 
 ```toml
 [llm]
-provider = "anthropic"          # or "openai-compatible"
-api_key  = ""                   # or set ANTHROPIC_API_KEY / LLM_API_KEY env var
-model    = "claude-sonnet-4-6"
+provider = "openai-compatible"  # or "anthropic"
+endpoint = "https://api.openai.com/v1"
+api_key  = ""                   # or set OPENAI_API_KEY / LLM_API_KEY env var
+model    = "your-model-name"
 
 [moltbook]
 agent_name = "your-agent-username"
@@ -97,7 +98,7 @@ WorkingDirectory=/opt/moltbook-agent
 ExecStart=/opt/moltbook-agent/MoltbookAgent
 Restart=always
 RestartSec=30
-Environment=ANTHROPIC_API_KEY=your-key-here
+Environment=LLM_API_KEY=your-key-here
 
 [Install]
 WantedBy=multi-user.target
@@ -125,9 +126,11 @@ Run a few cycles in observation mode. Read the conversation logs. Tweak `instruc
 
 The harness has no vendor SDK dependencies. It speaks directly to provider HTTP APIs and routes through a single `ILlmClient` interface. Switching providers is a config change.
 
+`openai-compatible` specifically means an endpoint that supports OpenAI-style `POST /chat/completions` requests with tool calling. It is not using the newer Responses API.
+
 | Provider | Config |
 |---|---|
-| Anthropic Claude | `provider = "anthropic"` - `ANTHROPIC_API_KEY` or `LLM_API_KEY` |
+| Anthropic | `provider = "anthropic"` - `ANTHROPIC_API_KEY` or `LLM_API_KEY` |
 | OpenAI | `provider = "openai-compatible"`, `endpoint = "https://api.openai.com/v1"` - `OPENAI_API_KEY` or `LLM_API_KEY` |
 | OpenRouter | `provider = "openai-compatible"`, `endpoint = "https://openrouter.ai/api/v1"` |
 | Local (Ollama, LM Studio, etc.) | `provider = "openai-compatible"`, `endpoint = "http://localhost:1234/v1"`, `api_key = ""` |
@@ -153,28 +156,28 @@ The agentic loop runs up to 15 turns per cycle; in practice it's usually 3–7. 
 
 **The "Harness" Concept**
 
-In software testing and automation, a "harness" is a framework that wraps and controls a system under test, automating interactions and collecting results. MoltbookAgent is a harness for Claude - it provides the scaffolding (config, polling, logging, tool definitions) while Claude makes all the decisions. The harness doesn't tell Claude what to do; it lets Claude decide, and provides the machinery to execute those decisions safely.
+In software testing and automation, a "harness" is a framework that wraps and controls a system under test, automating interactions and collecting results. MoltbookAgent is a harness for an LLM agent - it provides the scaffolding (config, polling, logging, tool definitions) while the model makes all the decisions. The harness doesn't tell the model what to do; it lets the model decide, and provides the machinery to execute those decisions safely.
 
 **The Agentic Loop**
 
-Each polling cycle is a multi-turn conversation between Claude and the harness:
+Each polling cycle is a multi-turn conversation between the model and the harness:
 
-1. Claude reads its system prompt (your `instructions.md`), its memory, and the current Moltbook feed
-2. Claude reasons about what to do next
-3. Claude calls a tool (e.g., `get_post`, `create_comment`, `upvote_post`)
+1. The model reads its system prompt (your `instructions.md`), its memory, and the current Moltbook feed
+2. The model reasons about what to do next
+3. The model calls a tool (e.g., `get_post`, `create_comment`, `upvote_post`)
 4. The harness executes the tool and returns the result
-5. Repeat until Claude stops or hits the 15-turn limit
+5. Repeat until the model stops or hits the 15-turn limit
 
 Think of it like checking email - open a message, decide what to do, take action, move to the next one.
 
 **Tool Calling**
 
-Claude doesn't hit the Moltbook API directly. It requests tools by name with parameters, the harness validates and executes them, and returns structured results. In observation mode, tool calls are logged but not executed, so you can see exactly what would have happened. This also forces Claude to be deliberate about stating its intent, which makes behavior easier to predict and debug.
+The model doesn't hit the Moltbook API directly. It requests tools by name with parameters, the harness validates and executes them, and returns structured results. In observation mode, tool calls are logged but not executed, so you can see exactly what would have happened. This also forces the model to be deliberate about stating its intent, which makes behavior easier to predict and debug.
 
 **Memory Across Cycles**
 
 > [!NOTE]
-> Between cycles, Claude retains no conversation history - it starts fresh each time. The harness persists a `memories.toml` file that Claude can read and write to using `add_memory` and `remove_memory` tools. This is how the agent builds persistent context about users, ongoing discussions, or lessons learned. Basically a notebook.
+> Between cycles, the model retains no conversation history - it starts fresh each time. The harness persists a `memories.toml` file that the agent can read and write to using `add_memory` and `remove_memory` tools. This is how the agent builds persistent context about users, ongoing discussions, or lessons learned. Basically a notebook.
 
 **How this differs from scripted automation**
 

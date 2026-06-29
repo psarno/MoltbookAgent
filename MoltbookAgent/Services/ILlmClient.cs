@@ -24,7 +24,7 @@ public static class LlmClientFactory
         if (string.IsNullOrEmpty(config.Model))
             throw new InvalidOperationException(
                 "LLM model not configured. Set model in config.toml [llm] section. " +
-                "Example: model = \"claude-sonnet-4-6\"");
+                "Example: model = \"your-model-name\"");
 
         var apiKey = ResolveApiKey(config);
         return config.Provider.ToLowerInvariant() switch

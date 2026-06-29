@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace MoltbookAgent.Services;
 
 /// <summary>
-/// Anthropic Claude implementation of ILlmClient using the native /v1/messages HTTP API.
+/// Anthropic implementation of ILlmClient using the native /v1/messages HTTP API.
 /// Tool definitions and dispatch use the provider-agnostic AgentTool type.
 /// </summary>
 public class AnthropicLlmClient : ILlmClient
